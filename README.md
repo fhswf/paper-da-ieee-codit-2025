@@ -8,9 +8,8 @@
 - Add a citation to the paper
 
 
-# Paper [Journal] [Year] - Arend/Schwung - "Title of the paper"
-This repository provides the sample program described in Section _**IV. SAMPLE: AUTO-RENORMALIZATION OF DRIFTING
-STREAM DATA**_ of the above conference paper.
+# Paper IEEE CoDIT 2025 - Arend/Singh Padda/Schwung - "Online-adaptive PID control using Reinforcement Learning"
+This repository provides the sample program described in Section _**V. RESULTS AND EXPERIMENTS**_ of the above conference paper.
 
 ## How to execute
 
@@ -26,7 +25,7 @@ STREAM DATA**_ of the above conference paper.
 
 ## See also
 
-...
+[11th IEEE International Conference on Control, Decision and Information Technologies (CoDIT)](https://www.codit2025.org/)
 
 [MLPro - the integrative middleware framework for standardized machine learning in Python](https://mlpro.readthedocs.io/)
 
@@ -35,6 +34,8 @@ STREAM DATA**_ of the above conference paper.
 
 ## Contact us
 
-Detlef Arend: [email](mailto:arend.detlef@fh-swf.de) [orcid](https://orcid.org/my-orcid?orcid=0000-0002-8315-2346) [linkedin](https://www.linkedin.com/in/detlef-arend-65170527b)
+Detlef Arend: [email](mailto:arend.detlef@fh-swf.de) | [orcid](https://orcid.org/0000-0002-8315-2346) | [researchgate](https://www.researchgate.net/profile/Detlef-Arend) | [linkedin](https://www.linkedin.com/in/detlef-arend-65170527b)
 
-Andreas Schwung: [email](mailto:schwung.andreas@fh-swf.de) [orcid](https://orcid.org/0000-0001-8405-0977)
+Amerik Toni Singh Padda: [email](mailto:amerik.singh13@gmail.com)
+
+Andreas Schwung: [email](mailto:schwung.andreas@fh-swf.de) | [orcid](https://orcid.org/0000-0001-8405-0977) | [researchgate](https://www.researchgate.net/profile/Andreas-Schwung)
