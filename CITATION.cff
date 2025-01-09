@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "fhswf/paper-da-ieee-icps-2025: v1.0.2"
+authors:
+- family-names: "Arend"
+  given-names: "Detlef"
+  orcid: "https://orcid.org/0000-0002-8315-2346"
+  affiliation: "South Westphalia University of Applied Sciences, Germany"
+- family-names: "Schwung"
+  given-names: "Andreas"
+  orcid: "https://orcid.org/0000-0001-8405-0977"
+  affiliation: "South Westphalia University of Applied Sciences, Germany"
+license: "Apache-2.0"
+version: "1.0.2"
+date-released: 2024-11-23
+doi: 10.5281/zenodo.13995893
+url: "https://github.com/fhswf/paper-da-ieee-icps-2025"
