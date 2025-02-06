@@ -1,6 +1,6 @@
 cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
-title: "fhswf/paper-da-ieee-codit-2025: v0.0.1"
+title: "GitHub repository fhswf/paper-da-ieee-codit-2025"
 authors:
 - family-names: "Arend"
   given-names: "Detlef"
@@ -16,5 +16,5 @@ authors:
 license: "Apache-2.0"
 version: "0.0.1"
 date-released: 2025-02-06
-doi: 10.5281/zenodo.13995893
+doi: 10.5281/zenodo.14827652
 url: "https://github.com/fhswf/paper-da-ieee-codit-2025"
