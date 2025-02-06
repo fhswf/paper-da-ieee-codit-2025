@@ -1,4 +1,4 @@
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.13995893.svg)](https://doi.org/10.5281/zenodo.13995893)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14827652.svg)](https://doi.org/10.5281/zenodo.14827652)
 
 # Checklist (remove before publication!)
 
