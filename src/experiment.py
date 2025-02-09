@@ -151,8 +151,7 @@ class MyReward(FctReward):
         
         
         reward = - abs(error_new)
-        self._reward.set_overall_reward(reward)
-        #self._reward.set_overall_reward(reward)
+        self._reward.set_overall_reward(reward)      
         
         return self._reward
 
@@ -179,7 +178,6 @@ class MyReward2(FctReward):
         
         reward = -abs(error_new)- error_new**2
         self._reward.set_overall_reward(reward)
-        #self._reward.set_overall_reward(reward)
         
         return self._reward
 
@@ -207,8 +205,7 @@ class MyReward3(FctReward):
         
         reward = -abs(error_new)- error_new**2 - 10*max(abs(error_new)-e_band,0)**2
         self._reward.set_overall_reward(reward)
-        #self._reward.set_overall_reward(reward)
-        
+           
         return self._reward
     
 
@@ -233,8 +230,7 @@ class MyReward4(FctReward):
         e_band = 0.5
         
         reward = -abs(error_new)- error_new**2 - 3*max(abs(error_new)-e_band,0)**2 + 30*min(abs(error_new),0.03)
-        self._reward.set_overall_reward(reward)
-        #self._reward.set_overall_reward(reward)
+        self._reward.set_overall_reward(reward)     
         
         return self._reward
 
