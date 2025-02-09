@@ -240,11 +240,9 @@ class MyReward4(FctReward):
 
 
 ## -------------------------------------------------------------------------------------------------   
-def experiment_cascade(learning_rate : float, my_reward : FctReward, num_policy : int, num_reward: int, path : str):
+def experiment_cascade(learning_rate : float, my_reward : FctReward, num_policy : int, num_reward: int, path : str, p_visualize: bool, p_logging: bool):
 
     # 1 Prepare for test   
-    logging     = Log.C_LOG_ALL
-    visualize   = False
     step_rate   = 1
     num_dim     = 1
 
@@ -258,7 +256,7 @@ def experiment_cascade(learning_rate : float, my_reward : FctReward, num_policy 
     pt1_K = 25
 
     # define cycle limit
-    cycle_limit = 15
+    cycle_limit = 15000
 
     # init setpoint
     setpoint_value = 40
@@ -273,8 +271,8 @@ def experiment_cascade(learning_rate : float, my_reward : FctReward, num_policy 
                     p_sys_num = 0,
                     p_y_start = 0,
                     p_latency = timedelta( seconds = 1 ),
-                    p_visualize = visualize,
-                    p_logging = logging )
+                    p_visualize = p_visualize,
+                    p_logging = p_logging )
 
     my_ctrl_sys_1.reset( p_seed = 42 )   
 
@@ -288,8 +286,8 @@ def experiment_cascade(learning_rate : float, my_reward : FctReward, num_policy 
                         p_integral_off = True,
                         p_derivitave_off = True,
                         p_name = 'PID Controller2',
-                        p_visualize = visualize,
-                        p_logging = logging )
+                        p_visualize = p_visualize,
+                        p_logging = p_logging )
 
 
     # 3 Setup outer casscade
@@ -301,8 +299,8 @@ def experiment_cascade(learning_rate : float, my_reward : FctReward, num_policy 
                         p_sys_num = 1,
                         p_max_cycle = cycle_limit,
                         p_latency = timedelta( seconds = 4 ),
-                        p_visualize = visualize,
-                        p_logging = logging )
+                        p_visualize = p_visualize,
+                        p_logging = p_logging )
 
     my_ctrl_sys_2.reset( p_seed = 42 )
 
@@ -332,8 +330,8 @@ def experiment_cascade(learning_rate : float, my_reward : FctReward, num_policy 
                         p_Tn = 0,
                         p_Tv = 0,
                         p_name = 'PID Controller',
-                        p_visualize = visualize,
-                        p_logging = logging )  
+                        p_visualize = p_visualize,
+                        p_logging = p_logging )  
 
 
     #3.2.4 Set RL-Policy
@@ -351,7 +349,7 @@ def experiment_cascade(learning_rate : float, my_reward : FctReward, num_policy 
     poliy_wrapper = WrPolicySB32MLPro(p_sb3_policy = policy_sb3,
                                     p_cycle_limit = cycle_limit,
                                     p_observation_space = my_ctrl_sys_2.get_state_space(),
-                                    p_action_space = p_pid_paramter_space,p_logging = logging )
+                                    p_action_space = p_pid_paramter_space,p_logging = p_logging )
 
 
     #3.2.6 Init PID-Policy
@@ -359,8 +357,8 @@ def experiment_cascade(learning_rate : float, my_reward : FctReward, num_policy 
                         p_action_space = p_pid_output_space,
                         p_pid_controller = my_ctrl_1,
                         p_policy = poliy_wrapper,
-                        p_visualize = visualize,
-                        p_logging = logging )
+                        p_visualize = p_visualize,
+                        p_logging = p_logging )
 
 
     #3.2.7 Init OA-PID-Controller
@@ -368,8 +366,8 @@ def experiment_cascade(learning_rate : float, my_reward : FctReward, num_policy 
                                         p_output_space = p_pid_output_space,
                                         p_rl_policy = rl_pid_policy,
                                         p_rl_fct_reward = my_reward,
-                                        p_visualize = visualize,
-                                        p_logging = logging)
+                                        p_visualize = p_visualize,
+                                        p_logging = p_logging)
 
 
     # 4. Cascaded control system
@@ -378,8 +376,8 @@ def experiment_cascade(learning_rate : float, my_reward : FctReward, num_policy 
                                             p_controlled_systems = [my_ctrl_sys_2, my_ctrl_sys_1 ],
                                             p_name = 'Stirring vessel',
                                             p_cycle_limit = cycle_limit,
-                                            p_visualize = visualize,
-                                            p_logging = logging )
+                                            p_visualize = p_visualize,
+                                            p_logging = p_logging )
 
 
     # 5 Set initial setpoint values for all control workflows (=cascades) of the control system
@@ -389,7 +387,7 @@ def experiment_cascade(learning_rate : float, my_reward : FctReward, num_policy 
     
 
         # 5 Run some control cycles
-    if visualize:
+    if p_visualize:
         mycontrolsystem.init_plot( p_plot_settings = PlotSettings( p_view = PlotSettings.C_VIEW_ND,
                                                                 p_view_autoselect = True,
                                                                 p_step_rate = step_rate,
@@ -429,14 +427,17 @@ def experiment_cascade(learning_rate : float, my_reward : FctReward, num_policy 
 
 
 ## ------------------------------------------------------------------------------------------------- 
-def get_valid_input(prompt, valid_range):
+def get_valid_input(prompt, valid_range, default=None):
     """
-    Prompts the user for input and validates it against a given range of values.
-    If the input is invalid, the user is prompted again.
+    Prompts the user for input with a default value. If the user presses ENTER,
+    the default value is used. Input is validated against a given range.
     """
     while True:
+        user_input = input(f"{prompt} (Press enter for default: {default}): ")
+        if not user_input.strip() and default is not None:
+            return default
         try:
-            user_input = int(input(prompt))
+            user_input = int(user_input)
             if user_input in valid_range:
                 return user_input
             else:
@@ -446,19 +447,17 @@ def get_valid_input(prompt, valid_range):
 
 
 ## ------------------------------------------------------------------------------------------------- 
-def get_valid_file_path(prompt):
+def get_valid_file_path(prompt, default_path):
     """
-    Prompts the user for a file path and validates its directory part.
-    If the directory does not exist, the user is prompted again.
+    Prompts the user for a file path. Uses a default path if the user presses ENTER.
+    Validates that the directory exists.
     """
     while True:
-        file_path = input(prompt)
+        user_input = input(f"{prompt} (Press enter for default: {default_path}): ")
+        file_path = user_input.strip() or default_path
         directory = os.path.dirname(file_path)
-        # Check if the directory exists
         if directory and not os.path.exists(directory):
             print(f"Invalid path! The directory '{directory}' does not exist. Please try again.")
-        elif not file_path.strip():
-            print("Invalid input! The file path cannot be empty. Please try again.")
         else:
             return file_path
 
@@ -469,20 +468,43 @@ policy_range = range(1, 5)  # Valid: 1-4
 reward_range = range(0, 4)  # Valid: 0-3
 learning_rate_range = range(1, 5)  # Valid: 1-4
 
+# Default values
+default_policy = 1  # Default: A2C
+default_reward = 0  # Default: First reward function
+default_learning_rate = 1  # Default: 0.001
+
+default_path = os.path.expanduser("~/")
+
+default_visualization = "y"  # Default: Yes
+default_logging = "y"  # Default: Yes
+
 # Safely read the inputs
-num_policy = get_valid_input("Please enter the policy number (A2C == 1, SAC == 2, DDPG == 3, PPO == 4): ", policy_range)
-num_reward = get_valid_input("Please enter the reward function (0 - 3): ", reward_range)
-learning_rate = get_valid_input("Please enter the learning rate (0.001 == 1, 0.005 == 2, 0.01 == 3, 0.05 == 4): ", learning_rate_range)
+num_policy = get_valid_input("Please enter the policy number (A2C == 1, SAC == 2, DDPG == 3, PPO == 4)", policy_range, default_policy)
+num_reward = get_valid_input("Please enter the reward function (0 - 3)", reward_range, default_reward)
+learning_rate = get_valid_input("Please enter the learning rate (0.001 == 1, 0.005 == 2, 0.01 == 3, 0.05 == 4)", learning_rate_range, default_learning_rate)
 
-# Prompt the user for a file path
-file_path = get_valid_file_path("Please enter the file path where the file should be saved: ")
+# Get file path with default
+file_path = get_valid_file_path("Please enter the file path where the file should be saved", default_path)
 
-my_rewards = [MyReward(),MyReward2(),MyReward3(),MyReward4()]
-learning_rates = [0.001,0.005,0.01,0.05]
+# Additional user inputs for visualization and logging
+visualization = input(f"Enable visualization? (y/n, Press enter for default: {default_visualization}): ").strip().lower() or default_visualization
+logging = input(f"Enable logging? (y/n, press Enter for default: {default_logging}): ").strip().lower() or default_logging
 
+# Convert inputs to boolean
+visualization = visualization == "y"
+logging = logging == "y"
 
-experiment_cascade(learning_rate = learning_rate, 
-                   my_reward = my_rewards[num_reward], 
-                   num_policy = num_policy, 
-                   num_reward = num_reward, 
-                   path = file_path)
+# Define mappings
+my_rewards = [MyReward(), MyReward2(), MyReward3(), MyReward4()]
+learning_rates = [0.001, 0.005, 0.01, 0.05]
+
+# Call experiment function
+experiment_cascade(
+    learning_rate = learning_rates[learning_rate - 1],
+    my_reward = my_rewards[num_reward],
+    num_policy = num_policy,
+    num_reward = num_reward,
+    path = file_path,
+    p_visualize = visualization,
+    p_logging = logging
+)
