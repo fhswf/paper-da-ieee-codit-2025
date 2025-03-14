@@ -1,13 +1,5 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14827652.svg)](https://doi.org/10.5281/zenodo.14827652)
 
-# Checklist (remove before publication!)
-
-- Change title and description
-- Change visibility to public
-- Create a new Zenodo record, create a release v0.0.0 and adjust the above badge
-- Add a citation to the paper
-
-
 # Paper IEEE CoDIT 2025 - Arend/Singh Padda/Schwung - "Online-adaptive PID control using Reinforcement Learning"
 This repository provides the sample program described in Section _**V. RESULTS AND EXPERIMENTS**_ of the above conference paper.
 
