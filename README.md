@@ -5,15 +5,20 @@ This repository provides the sample program described in Section _**V. RESULTS A
 
 ## How to execute
 
-[Step 1: Install these Python packages](requirements.txt)
+Step 1: Install the required Python packages ([stable](requirements_stable.txt) or [latest](requirements_latest.txt))
 
-[Step 2: Execute the sample program and follow the hints on the screen](src/sample_auto-renormalization_of_drifting_stream_data.py)
+Step 2: Execute the [sample program](src/experiment.py) and follow the hints on the screen [like this](video/window_arrangement.gif)
 
-[Step 3: Manually arrange the plot windows and press enter](video/window_arrangement.gif)
 
-## Screenshots 1
+## Experiment with default parameters
 
-## Screenshots 2
+![video](video/experiment.gif)
+
+
+## Result data file
+
+[result data file](results/cascaded_control_2025-03-20-04-33-18.csv)
+
 
 ## See also
 

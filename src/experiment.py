@@ -2,7 +2,7 @@
 ## -- Paper      : Online-adaptive PID control using Reinforcement Learning
 ## -- Conference : IEEE International Conference on Control, Decision and Information Technologies (2025)
 ## -- Authors    : Detlef Arend, Amerik Toni Singh Padda, Andreas Schwung
-## -- Development: Amerik Toni Singh Padda, Detlef Arend
+## -- Development: Detlef Arend, Amerik Toni Singh Padda
 ## -- Module     : experiment.py
 ## -------------------------------------------------------------------------------------------------
 
@@ -239,7 +239,7 @@ class MyReward4(FctReward):
 def experiment_cascade(learning_rate : float, my_reward : FctReward, num_policy : int, num_reward: int, path : str, p_visualize: bool, p_logging: bool):
 
     # 1 Prepare for test   
-    step_rate   = 1
+    step_rate   = 20
     num_dim     = 1
 
     # 1.1 Define init parameters and calculate cycle limit
@@ -262,41 +262,41 @@ def experiment_cascade(learning_rate : float, my_reward : FctReward, num_policy 
     # 2 Setup inner casscade
 
     # 2.1 controlled system 
-    my_ctrl_sys_1 = PT1(p_K = pt1_T,
-                    p_T = pt1_K,
-                    p_sys_num = 0,
-                    p_y_start = 0,
-                    p_latency = timedelta( seconds = 1 ),
-                    p_visualize = p_visualize,
-                    p_logging = p_logging )
+    my_ctrl_sys_1 = PT1( p_K = pt1_T,
+                         p_T = pt1_K,
+                         p_sys_num = 0,
+                         p_y_start = 0,
+                         p_latency = timedelta( seconds = 1 ),
+                         p_visualize = p_visualize,
+                         p_logging = p_logging )
 
     my_ctrl_sys_1.reset( p_seed = 42 )   
 
 
     # 2.2 P-Controller
     my_ctrl_2 = PIDController( p_input_space = my_ctrl_sys_1.get_state_space(),
-                        p_output_space = my_ctrl_sys_1.get_action_space(),
-                        p_Kp = 0.36,
-                        p_Tn = 0,
-                        p_Tv = 0,
-                        p_integral_off = True,
-                        p_derivitave_off = True,
-                        p_name = 'PID Controller2',
-                        p_visualize = p_visualize,
-                        p_logging = p_logging )
+                               p_output_space = my_ctrl_sys_1.get_action_space(),
+                               p_Kp = 0.36,
+                               p_Tn = 0,
+                               p_Tv = 0,
+                               p_integral_off = True,
+                               p_derivitave_off = True,
+                               p_name = 'PID Controller2',
+                               p_visualize = p_visualize,
+                               p_logging = p_logging )
 
 
     # 3 Setup outer casscade
 
     # 3.1 controlled system 
-    my_ctrl_sys_2 = PT2(p_K = pt2_K,
-                        p_D = pt2_D,
-                        p_omega_0 = pt2_w_0,
-                        p_sys_num = 1,
-                        p_max_cycle = cycle_limit,
-                        p_latency = timedelta( seconds = 4 ),
-                        p_visualize = p_visualize,
-                        p_logging = p_logging )
+    my_ctrl_sys_2 = PT2( p_K = pt2_K,
+                         p_D = pt2_D,
+                         p_omega_0 = pt2_w_0,
+                         p_sys_num = 1,
+                         p_max_cycle = cycle_limit,
+                         p_latency = timedelta( seconds = 4 ),
+                         p_visualize = p_visualize,
+                         p_logging = p_logging )
 
     my_ctrl_sys_2.reset( p_seed = 42 )
 
@@ -313,24 +313,24 @@ def experiment_cascade(learning_rate : float, my_reward : FctReward, num_policy 
     p_pid_paramter_space.add_dim(dim_Tv)
 
 
-    #3.2.2 Define PID-Output-Space
+    # 3.2.2 Define PID-Output-Space
     p_pid_output_space = MSpace()
     p_control_dim = Dimension('u',p_boundaries = [0,500])
     p_pid_output_space.add_dim(p_control_dim)
 
 
-    #3.2.3 Init PID-Controller
+    # 3.2.3 Init PID-Controller
     my_ctrl_1 = PIDController( p_input_space = my_ctrl_sys_2.get_state_space(),
-                        p_output_space = my_ctrl_sys_2.get_action_space(),
-                        p_Kp = 1,
-                        p_Tn = 0,
-                        p_Tv = 0,
-                        p_name = 'PID Controller',
-                        p_visualize = p_visualize,
-                        p_logging = p_logging )  
+                               p_output_space = my_ctrl_sys_2.get_action_space(),
+                               p_Kp = 1,
+                               p_Tn = 0,
+                               p_Tv = 0,
+                               p_name = 'PID Controller',
+                               p_visualize = p_visualize,
+                               p_logging = p_logging )  
 
 
-    #3.2.4 Set RL-Policy
+    # 3.2.4 Set RL-Policy
     if num_policy == 1:        
         policy_sb3 = A2C( policy="MlpPolicy",learning_rate = learning_rate,seed = 42,env = None,_init_setup_model = False,n_steps = 100)
     elif num_policy == 2:
@@ -341,32 +341,33 @@ def experiment_cascade(learning_rate : float, my_reward : FctReward, num_policy 
         policy_sb3 = PPO( policy="MlpPolicy",learning_rate = learning_rate,seed = 42,env = None,_init_setup_model = False,n_steps = 100)   
     
 
-    #3.2.5 Init SB3 to MLPro wrapper
-    poliy_wrapper = WrPolicySB32MLPro(p_sb3_policy = policy_sb3,
-                                    p_cycle_limit = cycle_limit,
-                                    p_observation_space = my_ctrl_sys_2.get_state_space(),
-                                    p_action_space = p_pid_paramter_space,p_logging = p_logging )
+    # 3.2.5 Init SB3 to MLPro wrapper
+    poliy_wrapper = WrPolicySB32MLPro( p_sb3_policy = policy_sb3,
+                                       p_cycle_limit = cycle_limit,
+                                       p_observation_space = my_ctrl_sys_2.get_state_space(),
+                                       p_action_space = p_pid_paramter_space,p_logging = p_logging )
 
 
-    #3.2.6 Init PID-Policy
-    rl_pid_policy = RLPIDEnh(p_observation_space = my_ctrl_sys_2.get_state_space(),
-                        p_action_space = p_pid_output_space,
-                        p_pid_controller = my_ctrl_1,
-                        p_policy = poliy_wrapper,
-                        p_visualize = p_visualize,
-                        p_logging = p_logging )
+    # 3.2.6 Init PID-Policy
+    rl_pid_policy = RLPIDEnh( p_observation_space = my_ctrl_sys_2.get_state_space(),
+                              p_action_space = p_pid_output_space,
+                              p_pid_controller = my_ctrl_1,
+                              p_policy = poliy_wrapper,
+                              p_visualize = p_visualize,
+                              p_logging = p_logging )
 
 
-    #3.2.7 Init OA-PID-Controller
-    my_ctrl_OA = wrapper_rl.OAControllerRL(p_input_space = my_ctrl_sys_2.get_state_space(),
-                                        p_output_space = p_pid_output_space,
-                                        p_rl_policy = rl_pid_policy,
-                                        p_rl_fct_reward = my_reward,
-                                        p_visualize = p_visualize,
-                                        p_logging = p_logging)
+    # 3.2.7 Init OA-PID-Controller
+    my_ctrl_OA = wrapper_rl.OAControllerRL( p_input_space = my_ctrl_sys_2.get_state_space(),
+                                            p_output_space = p_pid_output_space,
+                                            p_rl_policy = rl_pid_policy,
+                                            p_rl_fct_reward = my_reward,
+                                            p_name = 'RLPID Controller',
+                                            p_visualize = p_visualize,
+                                            p_logging = p_logging )
 
 
-    # 4. Cascaded control system
+    # 4 Cascaded control system
     mycontrolsystem = CascadeControlSystem( p_mode = Mode.C_MODE_SIM,
                                             p_controllers = [ my_ctrl_OA, my_ctrl_2],
                                             p_controlled_systems = [my_ctrl_sys_2, my_ctrl_sys_1 ],
@@ -382,14 +383,16 @@ def experiment_cascade(learning_rate : float, my_reward : FctReward, num_policy 
 
     
 
-        # 5 Run some control cycles
+    # 6 Run control cycles
     if p_visualize:
         mycontrolsystem.init_plot( p_plot_settings = PlotSettings( p_view = PlotSettings.C_VIEW_ND,
-                                                                p_view_autoselect = True,
-                                                                p_step_rate = step_rate,
-                                                                p_plot_horizon = 100 ) )
+                                                                   p_view_autoselect = True,
+                                                                   p_step_rate = step_rate,
+                                                                   p_plot_horizon = 100 ) )
 
-    #run cascaded control system
+        input('\n\nPlease arrange all windows and press ENTER to start stream processing...')
+
+
     try:
         mycontrolsystem.run()
 
@@ -397,9 +400,10 @@ def experiment_cascade(learning_rate : float, my_reward : FctReward, num_policy 
         print("Fehlermeldung:",e)
         status = e
     
+
     #store data
     data = {
-        "Zeitstempel": rl_pid_policy._tstamps,
+        "Time stamp": rl_pid_policy._tstamps,
         "Reward": rl_pid_policy._rewards,
         "Error": rl_pid_policy._error,
         "Kp": rl_pid_policy._pid_k,
@@ -458,13 +462,15 @@ def get_valid_file_path(prompt, default_path):
             return file_path
 
 
-## ------------------------------------------------------------------------------------------------- 
-# Define valid ranges for the inputs
+
+
+# 1 Demo setup
+
+# 1.1 Default values
 policy_range = range(1, 5)  # Valid: 1-4
 reward_range = range(0, 4)  # Valid: 0-3
 learning_rate_range = range(1, 5)  # Valid: 1-4
 
-# Default values
 default_policy = 1  # Default: A2C
 default_reward = 0  # Default: First reward function
 default_learning_rate = 1  # Default: 0.001
@@ -474,27 +480,38 @@ default_path = os.path.expanduser("~/")
 default_visualization = "y"  # Default: Yes
 default_logging = "y"  # Default: Yes
 
-# Safely read the inputs
+# 1.2 Welcome message
+print('\n\n--------------------------------------------------------------------------------------------------------------------------')
+print('Publication: "Online-adaptive PID control using Reinforcement Learning"')
+print('Conference : IEEE International Conference on Control, Decision and Information Technologies (CoDIT) 2025, Split, Croatia')
+print('Authors    : Dipl.-Inform. Detlef Arend, M.Sc. Amerik Toni Singh Padda, Prof. Dr.-Ing. Andreas Schwung')
+print('Affiliation: South Westphalia University of Applied Sciences, Germany')
+print('Sample     : Cascaded control with embedded online-adaptive PID controller')
+print('--------------------------------------------------------------------------------------------------------------------------\n')
+
+# 1.3 Safely read the inputs
 num_policy = get_valid_input("Please enter the policy number (A2C == 1, SAC == 2, DDPG == 3, PPO == 4)", policy_range, default_policy)
 num_reward = get_valid_input("Please enter the reward function (0 - 3)", reward_range, default_reward)
 learning_rate = get_valid_input("Please enter the learning rate (0.001 == 1, 0.005 == 2, 0.01 == 3, 0.05 == 4)", learning_rate_range, default_learning_rate)
 
-# Get file path with default
+# 1.4 Get file path with default
 file_path = get_valid_file_path("Please enter the file path where the file should be saved", default_path)
 
-# Additional user inputs for visualization and logging
+# 1.5 Additional user inputs for visualization and logging
 visualization = input(f"Enable visualization? (y/n, Press enter for default: {default_visualization}): ").strip().lower() or default_visualization
 logging = input(f"Enable logging? (y/n, press Enter for default: {default_logging}): ").strip().lower() or default_logging
 
-# Convert inputs to boolean
+# 1.6 Convert inputs to boolean
 visualization = visualization == "y"
 logging = logging == "y"
 
-# Define mappings
+
+# 2 Define mappings
 my_rewards = [MyReward(), MyReward2(), MyReward3(), MyReward4()]
 learning_rates = [0.001, 0.005, 0.01, 0.05]
 
-# Call experiment function
+
+# 3 Start control experiment
 experiment_cascade(
     learning_rate = learning_rates[learning_rate - 1],
     my_reward = my_rewards[num_reward],

@@ -1,0 +1,8 @@
+dill>=0.3.9
+numpy>=2.2.4
+matplotlib>=3.10.1
+multiprocess>=0.70.17
+stable-baselines3>=2.5.0
+mlpro>=2.2.0
+mlpro_int_sb3>=1.0.4
+
