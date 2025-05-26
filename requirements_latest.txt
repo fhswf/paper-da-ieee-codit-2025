@@ -3,7 +3,8 @@ numpy>=2.2.4
 matplotlib>=3.10.1
 multiprocess>=0.70.17
 scipy>=1.15.3
-stable-baselines3>=2.5.0
+stable-baselines3>=2.6.0
+sb3_contrib>=2.6.0
 mlpro>=2.2.0
 mlpro_int_sb3>=1.0.4
 
