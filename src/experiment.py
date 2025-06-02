@@ -358,9 +358,7 @@ def experiment_cascade(learning_rate : float, my_reward : FctReward, num_policy 
 
 
     # 3.2.7 Init OA-PID-Controller
-    my_ctrl_OA = wrapper_rl.OAControllerRL( p_input_space = my_ctrl_sys_2.get_state_space(),
-                                            p_output_space = p_pid_output_space,
-                                            p_rl_policy = rl_pid_policy,
+    my_ctrl_OA = wrapper_rl.OAControllerRL( p_rl_policy = rl_pid_policy,
                                             p_rl_fct_reward = my_reward,
                                             p_name = 'RLPID Controller',
                                             p_visualize = p_visualize,
