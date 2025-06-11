@@ -391,13 +391,9 @@ def experiment_cascade(learning_rate : float, my_reward : FctReward, num_policy 
         input('\n\nPlease arrange all windows and press ENTER to start stream processing...')
 
 
-    try:
-        mycontrolsystem.run()
+    mycontrolsystem.run()
 
-    except Exception as e:
-        print("Fehlermeldung:",e)
-        status = e
-    
+
 
     #store data
     data = {
